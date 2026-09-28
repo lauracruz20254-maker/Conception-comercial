@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conception — Fimalker</title>
+<style>
+html, body{background:#fff;}
+
+:root{--bg:#000;--panel:#0d0d0d;--panel2:#151515;--line:#303030;--text:#fff;--muted:#b0b0b0;--accent:#fff;--danger:#fff;--radius:16px}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}
+button,input,select,textarea{font:inherit} button{cursor:pointer}
+.app{display:flex;min-height:100vh}.sidebar{width:250px;border-right:1px solid var(--line);padding:26px 18px;position:fixed;top:0;bottom:0;background:#0c0c0c}
+.brand{padding:5px 12px 30px}.brand b{font-size:23px;letter-spacing:2px}.brand span{display:block;color:var(--muted);font-size:11px;margin-top:5px;letter-spacing:2px}
+.nav button{width:100%;background:none;border:0;color:#b5b5b5;text-align:left;padding:13px 14px;border-radius:10px;margin:3px 0}.nav button.active,.nav button:hover{background:#1c1c1c;color:#fff}
+.main{margin-left:250px;width:calc(100% - 250px);padding:30px 34px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}.top h1{font-size:27px;margin:0}.top p{color:var(--muted);margin:7px 0 0}
+.btn{border:1px solid #3a3a3a;background:#fff;color:#000;padding:11px 16px;border-radius:10px;font-weight:700}.btn.dark{background:#171717;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}.metric small{color:var(--muted)}.metric strong{font-size:29px;display:block;margin-top:8px}.metric em{font-style:normal;font-size:12px;color:#b5b5b5}
+.section{margin-top:22px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.section h2{font-size:17px;margin:0}
+table{width:100%;border-collapse:collapse}.table-wrap{overflow:auto}.table th,.table td{text-align:left;padding:15px 12px;border-bottom:1px solid var(--line);font-size:13px}.table th{color:#b5b5b5;font-weight:500}.tag{display:inline-block;padding:5px 9px;border-radius:999px;background:#000;color:#fff;border:1px solid #444;font-size:11px}.tag.green{background:#fff;color:#000}.tag.gold{background:#000;color:#fff;border:1px solid #666}
+.two{display:grid;grid-template-columns:1.35fr .9fr;gap:18px}.event{padding:15px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.event:last-child{border-bottom:0}.event b{font-size:14px}.event small{color:#b5b5b5;display:block;margin-top:5px}
+.search{background:#121212;border:1px solid var(--line);padding:10px 13px;border-radius:10px;color:#fff;width:260px}
+.modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px}.modal.open{display:flex}.modal-box{width:min(900px,100%);max-height:90vh;overflow:auto;background:#111;border:1px solid #333;border-radius:18px;padding:25px}.modal-head{display:flex;justify-content:space-between}.close{background:none;border:0;color:#b5b5b5;font-size:24px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field label{display:block;color:#b5b5b5;font-size:12px;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;background:#0b0b0b;border:1px solid #333;color:#fff;border-radius:9px;padding:11px}.field.full{grid-column:1/-1}.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.photo{height:105px;background:#1c1c1c;border:1px dashed #444;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#777;font-size:12px}
+.page{display:none}.page.active{display:block}
+.theme-toggle{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);color:var(--text);padding:9px 12px;border-radius:10px}
+.theme-dot{width:8px;height:8px;border-radius:50%;background:var(--text);display:inline-block}
+@media(max-width:900px){.sidebar{width:70px}.brand b{font-size:0}.brand b:after{content:"C";font-size:23px}.brand span,.nav button span{display:none}.main{margin-left:70px;width:calc(100% - 70px);padding:22px}.grid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
+@media(max-width:600px){.grid,.form-grid{grid-template-columns:1fr}.top{gap:10px;align-items:flex-start;flex-direction:column}.search{width:100%}.main{padding:15px}}
+
+/* CONCEPTION — modo diurno padrão */
+html, body, body.light {
+  background: #ffffff !important;
+  color: #111111 !important;
+}
+body.light .sidebar,
+body.light .main,
+body.light .panel,
+body.light .card,
+body.light .modal,
+body.light table,
+body.light .topbar,
+body.light .section,
+body.light .empty,
+body.light input,
+body.light select,
+body.light textarea {
+  background: #ffffff !important;
+  color: #111111 !important;
+}
+body.light .sidebar { border-right-color: #e5e5e5 !important; }
+body.light input, body.light select, body.light textarea,
+body.light .panel, body.light .card { border-color: #e5e5e5 !important; }
+
+
+/* CONCEPTION — contraste automático de texto por tema */
+body, body.light {
+  --text-main: #111111;
+  --text-muted: #555555;
+  --text-soft: #777777;
+  --border-theme: #dddddd;
+}
+body:not(.light) {
+  --text-main: #ffffff;
+  --text-muted: #dddddd;
+  --text-soft: #bbbbbb;
+  --border-theme: #333333;
+}
+body.light {
+  --text-main: #111111;
+  --text-muted: #555555;
+  --text-soft: #777777;
+  --border-theme: #dddddd;
+}
+body, body * {
+  color: var(--text-main);
+}
+body .muted, body .subtitle, body .hint, body small,
+body .empty p, body .description {
+  color: var(--text-muted);
+}
+body input, body select, body textarea {
+  color: var(--text-main) !important;
+}
+body input::placeholder, body textarea::placeholder {
+  color: var(--text-soft) !important;
+}
+body button {
+  color: var(--text-main);
+}
+body:not(.light) .logo,
+body:not(.light) .brand,
+body:not(.light) .nav-label,
+body:not(.light) h1,
+body:not(.light) h2,
+body:not(.light) h3,
+body:not(.light) h4,
+body:not(.light) strong,
+body:not(.light) b {
+  color: #ffffff !important;
+}
+body.light .logo,
+body.light .brand,
+body.light .nav-label,
+body.light h1,
+body.light h2,
+body.light h3,
+body.light h4,
+body.light strong,
+body.light b {
+  color: #111111 !important;
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><b>CONCEPTION</b><span>BY FIMALKER</span></div>
+  <nav class="nav">
+    <button class="active" onclick="showPage('dashboard',this)">◈ <span>Dashboard</span></button>
+    <button onclick="showPage('clientes',this)">♢ <span>Clientes</span></button>
+    <button onclick="showPage('eventos',this)">◷ <span>Eventos</span></button>
+    <button onclick="showPage('contratos',this)">▤ <span>Contratos</span></button>
+    <button onclick="showPage('midia',this)">▧ <span>Fotos & Vídeos</span></button>
+  </nav>
+</aside>
+
+<main class="main">
+<section id="dashboard" class="page active">
+  <div class="top"><div><h1>Dashboard</h1><p>Visão geral dos seus eventos e clientes.</p></div><div style="display:flex;gap:9px;align-items:center"><button class="theme-toggle" onclick="toggleTheme()" id="themeBtn"><span class="theme-dot"></span><span id="themeLabel">Diurno</span></button><button class="btn" onclick="openModal()">+ Novo cliente</button></div></div>
+  <div class="grid">
+    <div class="card metric"><small>Clientes ativos</small><strong id="mClients">0</strong><em>cadastros</em></div>
+    <div class="card metric"><small>Eventos próximos</small><strong>0</strong><em>nos próximos 90 dias</em></div>
+    <div class="card metric"><small>Contratos ativos</small><strong>0</strong><em>em acompanhamento</em></div>
+    <div class="card metric"><small>Eventos em 2026</small><strong>0</strong><em>planejados</em></div>
+  </div>
+  <div class="two section">
+    <div class="card"><div class="section-head"><h2>Próximos eventos</h2><span class="tag">Nenhum cadastrado</span></div>
+      <div style="padding:28px 0;color:#b5b5b5;text-align:center">Cadastre o primeiro evento para começar.</div>
+    </div>
+    <div class="card"><div class="section-head"><h2>Status dos contratos</h2></div>
+      <div class="event"><div><b>Assinados</b></div><span class="tag">0</span></div>
+      <div class="event"><div><b>Aguardando assinatura</b></div><span class="tag">0</span></div>
+      <div class="event"><div><b>Em negociação</b></div><span class="tag">0</span></div>
+      <div class="event"><div><b>Encerrados</b></div><span class="tag">0</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="clientes" class="page">
+ <div class="top"><div><h1>Clientes</h1><p>Cadastro completo dos noivos e histórico do evento.</p></div><div style="display:flex;gap:9px;align-items:center"><button class="theme-toggle" onclick="toggleTheme()"><span class="theme-dot"></span><span>Modo</span></button><button class="btn" onclick="openModal()">+ Novo cliente</button></div></div>
+ <div class="card"><div class="section-head"><h2>Base de clientes</h2><input class="search" placeholder="Buscar casal..." oninput="filterClients(this.value)"></div>
+ <div class="table-wrap"><table class="table"><thead><tr><th>Casal</th><th>Evento</th><th>Data</th><th>Pacote</th><th>Telefone</th><th>Status</th></tr></thead><tbody id="clientRows"><tr><td colspan="6" style="text-align:center;color:#777;padding:28px">Nenhum cliente cadastrado. Clique em “+ Novo cliente” para começar.</td></tr></tbody></table></div></div>
+</section>
+
+<section id="eventos" class="page">
+ <div class="top"><div><h1>Eventos</h1><p>Agenda, locais, horários e pacotes contratados.</p></div><button class="btn" onclick="openModal()">+ Novo evento</button></div>
+ <div class="card"><table class="table"><thead><tr><th>Casal</th><th>Data</th><th>Horário</th><th>Local</th><th>Pacote</th><th>Contrato</th></tr></thead>
+ <tbody><tr><td colspan="6" style="text-align:center;color:#777;padding:28px">Nenhum evento cadastrado.</td></tr></tbody></table></div>
+</section>
+
+<section id="contratos" class="page">
+ <div class="top"><div><h1>Contratos</h1><p>Termos, documentos e acompanhamento de assinatura.</p></div><button class="btn">+ Novo contrato</button></div>
+ <div class="grid">
+  <div class="card metric"><small>Valor contratado</small><strong>R$ 0</strong><em>base ativa</em></div>
+  <div class="card metric"><small>Parcelas pendentes</small><strong>0</strong><em>vencimentos futuros</em></div>
+  <div class="card metric"><small>Assinaturas</small><strong>0/0</strong><em>contratos ativos</em></div>
+  <div class="card metric"><small>Documentos</small><strong>0</strong><em>arquivos registrados</em></div>
+ </div>
+ <div class="card section"><div class="section-head"><h2>Documentos e termos</h2></div>
+ <table class="table"><thead><tr><th>Contrato</th><th>Casal</th><th>Data</th><th>Pacote</th><th>Termos</th><th>Status</th></tr></thead>
+ <tbody><tr><td colspan="6" style="text-align:center;color:#777;padding:28px">Nenhum contrato cadastrado.</td></tr></tbody></table></div>
+</section>
+
+<section id="midia" class="page">
+ <div class="top"><div><h1>Fotos & Vídeos</h1><p>Organize registros por casal, evento e etapa de produção.</p></div><button class="btn">+ Adicionar mídia</button></div>
+ <div class="card"><div class="section-head"><h2>Biblioteca de mídia</h2><span class="tag">Nenhum evento cadastrado</span></div>
+ <div style="padding:30px 0;color:#b5b5b5;text-align:center">As fotos e vídeos aparecerão aqui depois que você cadastrar um evento.</div>
+ </div>
+</section>
+</main>
+</div>
+
+<div class="modal" id="modal"><div class="modal-box"><div class="modal-head"><div><h2>Novo cadastro</h2><p style="color:#b5b5b5">Cadastre os dados principais do casal e do evento.</p></div><button class="close" onclick="closeModal()">×</button></div>
+<form onsubmit="saveClient(event)"><div class="form-grid">
+<div class="field"><label>Nome da noiva</label><input id="bride" required></div><div class="field"><label>Data de nascimento da noiva</label><input type="date"></div>
+<div class="field"><label>Nome do noivo</label><input id="groom" required></div><div class="field"><label>Data de nascimento do noivo</label><input type="date"></div>
+<div class="field"><label>Telefone principal</label><input id="phone" placeholder="(00) 00000-0000" required></div><div class="field"><label>E-mail</label><input type="email"></div>
+<div class="field"><label>Data do evento</label><input id="date" type="date" required></div><div class="field"><label>Horário</label><input type="time"></div>
+<div class="field"><label>Local do evento</label><input placeholder="Nome do espaço"></div><div class="field"><label>Pacote</label><select><option>Essencial</option><option>Completo</option><option>Premium</option><option>Personalizado</option></select></div>
+<div class="field full"><label>Termos / observações do contrato</label><textarea rows="4" placeholder="Condições, direitos de uso de imagem, prazo de entrega, pagamentos..."></textarea></div>
+</div><div class="actions"><button type="button" class="btn dark" onclick="closeModal()">Cancelar</button><button class="btn">Salvar cadastro</button></div></form>
+</div></div>
+
+<script>
+function showPage(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active')}
+function openModal(){document.getElementById('modal').classList.add('open')}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+
+function applyTheme(mode){
+  document.body.classList.toggle('light', mode==='light');
+  const label=document.getElementById('themeLabel');
+  if(label) label.textContent=mode==='light'?'Noturno':'Diurno';
+  localStorage.setItem('conceptionTheme',mode);
+}
+function toggleTheme(){
+  const light=document.body.classList.contains('light');
+  applyTheme(light?'dark':'light');
+}
+(function(){
+  const saved=localStorage.getItem('conceptionTheme') || 'light';
+  applyTheme(saved);
+})();
+
+function saveClient(e){e.preventDefault();const b=document.getElementById('bride').value,g=document.getElementById('groom').value,p=document.getElementById('phone').value,d=document.getElementById('date').value;const date=d?new Date(d+'T12:00:00').toLocaleDateString('pt-BR'):'';const tr=document.createElement('tr');tr.innerHTML=`<td><b>${b} & ${g}</b></td><td>Casamento</td><td>${date}</td><td>Personalizado</td><td>${p}</td><td><span class="tag green">Ativo</span></td>`;const empty=document.querySelector('#clientRows tr td[colspan]'); if(empty) empty.parentElement.remove(); document.getElementById('clientRows').prepend(tr);document.getElementById('mClients').textContent=Number(document.getElementById('mClients').textContent)+1;closeModal();e.target.reset();showPage('clientes',document.querySelectorAll('.nav button')[1])}
+function filterClients(q){document.querySelectorAll('#clientRows tr').forEach(r=>r.style.display=r.innerText.toLowerCase().includes(q.toLowerCase())?'':'none')}
+</script>
+</body>
+</html>
